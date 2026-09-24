@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*.py[cod]
+
+etherscan_data/*.csv
+!etherscan_data/sample_*.csv
