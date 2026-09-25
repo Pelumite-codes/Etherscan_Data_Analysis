@@ -85,7 +85,7 @@ ORDER BY same_block_trades DESC, rapid_bot_cadence_total DESC;
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/](https://github.com/)<your-username>/ethereum-dex-bot-analysis.git
+   git clone https://github.com/Pelumite-codes/Etherscan_Data_Analysis.git
    cd ethereum-dex-bot-analysis
    ```
 2. **Install Python dependencies:**
