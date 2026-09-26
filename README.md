@@ -1,11 +1,11 @@
 # Forensic On-Chain Analysis: Identifying Automated Trading Behaviour on Uniswap V3
 
-An end-to-end blockchain analytics and data engineering project identifing wallets exhibiting behavioural patterns on the Uniswap V3 Router (`0xE592427A0AEce92De3Edee1F18E0157C05861564`) using Python, Etherscan V2 API, and Microsoft SQL Server (T-SQL).
+An end-to-end blockchain analytics and data engineering project identifying wallets exhibiting behavioural patterns on the Uniswap V3 Router (`0xE592427A0AEce92De3Edee1F18E0157C05861564`) using Python, Etherscan V2 API, and Microsoft SQL Server (T-SQL).
 
 ---
 
 ## Executive Summary
-By querying 10,000 router transactions and 6,364 ERC-20 token transfer events spanning Ethereum blocks `25,943,331` to `25,985,564`, this project isolates programmatic bot actors from manual retail traders. The analysis correlates **windowed temporal intervals**, **gas bidding dynamics**, and **relational token tracking** to profile algorithmic actors on-chain.
+By querying 10,000 router transactions and 6,364 ERC-20 token transfer events spanning Ethereum blocks `25,943,331` to `25,985,564`, this project identifies wallets exhibiting behavioural characteristics consistent with automated trading activity. The analysis correlates **windowed temporal intervals**, **gas bidding dynamics**, and **relational token tracking** to profile algorithmic actors on-chain.
 
 ---
 
@@ -46,10 +46,10 @@ Can transaction cadence, gas bidding behaviour and token-flow patterns be used t
     * gas bidding
     * wallet activity
     * token flows
-5. **Classification**
+5. **Behavioural Screening**
     * submitting transactions within same block
     * Elevated gas price
-    * transactio with zero native ETH value
+    * transactions with zero native ETH value
 
 ---
 
@@ -62,7 +62,7 @@ Can transaction cadence, gas bidding behaviour and token-flow patterns be used t
 * **High-Frequency Classification:** Screened wallets submitting transactions within $\le 24$ seconds across multi-trade sequences using window functions.
 ![Frequency Classification Analysis](assets/High_Frequency_Classification.png)
 
-* **Likely Bots Flagged:** Wallets exhibiting repeated same-block and consecutive-block activity were flagged as candidates for automated trading behaviour.  `0xf204f3acb05c405c0010f2a2ecfa9fe61783f1d1` ranked highest among these candidates executing **207 rapid transactions**, featuring **86 atomic same-block executions (0 seconds)** and **77 consecutive-block trades (12 seconds)**.
+* **Likely Bots Flagged:** Wallets exhibiting repeated same-block and consecutive-block activity were flagged as candidates for automated trading behaviour.  `0xf204f3acb05c405c0010f2a2ecfa9fe61783f1d1` ranked highest among the screened candidates, executing **207 rapid transactions**, featuring **86 atomic same-block executions (0 seconds)** and **77 consecutive-block trades (12 seconds)**.
 ![Bots Analysis](assets/Primary_Bots.png)
  
 ### 2. Economic Forensics: Priority Gas Auctions (PGA)
@@ -100,7 +100,7 @@ Can transaction cadence, gas bidding behaviour and token-flow patterns be used t
 ---
 
 ## Key SQL Logic: Identifying Rapid Wallet Activity
-SQL window functions to calculate the time between consecutive transactions for each wallet, allowing wallets with repeated same-block or consective-block activity to be flagged for further investigation.
+SQL window functions to calculate the time between consecutive transactions for each wallet, allowing wallets with repeated same-block or consecutive-block activity to be flagged for further investigation.
 ```sql
 -- 1. Classifying Wallet Cadence via Window Functions
 WITH WalletCadence AS (
@@ -131,10 +131,10 @@ ORDER BY same_block_trades DESC, rapid_bot_cadence_total DESC;
 ---
 
 ## Limitations
-* High-frequency transaction patterns are **indicators** not definite proofof bot activity.
+* High-frequency transaction patterns are **indicators** not definite proof of bot activity.
 * The analysis covers a defined block range rather than the entire Uniswap V3 history.
 * Etherscan data may not expose every execution-level detail needed to conclusively attribute MEV strategies.
-* Wallet-level behaviour does not neccessarily reveal the identify or intent of an underlying actor.
+* Wallet-level behaviour does not necessarily reveal the identity or intent of an underlying actor.
 
 * Gas-price observations should be interpreted within Ethereum's fee-market mechanics.
 
@@ -142,12 +142,12 @@ ORDER BY same_block_trades DESC, rapid_bot_cadence_total DESC;
 
 ## How to Run Locally
 ### Prerequisites
-Before you running the project, make sure you have:
+Before running the project, make sure you have:
 - Python 3.x
 - Microsoft SQL Server
 
 - SQL Server Management Studio (SSMS)
-- An Etherscan API
+- An Etherscan API key
 ### 1. Clone the repository:
    ```bash
    git clone https://github.com/Pelumite-codes/Etherscan_Data_Analysis.git
@@ -160,7 +160,7 @@ Install the required Python packages:
    pip install requests pandas python-dotenv
    ```
 ### 3. Configure environment:
-   Create a `.env` file in the root directory add your Etherscan API key:
+   Create a `.env` file in the root directory and add your Etherscan API key:
    ```env
    ETHERSCAN_API_KEY="your_api_key_here"
    ```
@@ -188,7 +188,7 @@ Import the generated CSV files into Microsoft SQL Server:
 
 * token_transfers_2.csv - ERC-20 token transfer data
 
-Use the SQL import and export wizard in SSMS or anoter CSV-to-SQL import method.
+Use the SQL import and export wizard in SSMS or another CSV-to-SQL import method.
 
 Ensure both datasets are available as SQL tables before running analysis queries
 ### 6. Execute the SQL Analysis:
@@ -196,7 +196,7 @@ Ensure both datasets are available as SQL tables before running analysis queries
 
 ---
 
-The SQL queries generated the outputs used to identify wallets exhibiting behavioural characteristics consistent with automated tading activity.
+The SQL queries generated the outputs used to identify wallets exhibiting behavioural characteristics consistent with automated trading activity.
 
 These results should be interpreted alongside the projects limitations.
-High frequency transactions patterns are **indicators** of automated behaviour, not definite proof of bot activity.
+High-frequency transactions patterns are **indicators** of automated behaviour, not definite proof of bot activity.
